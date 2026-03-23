@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  openclaw-app:
+    container_name: openclaw_engine
+    build: .  
+    restart: unless-stopped
+    environment:
+      - TZ=Asia/Kolkata
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data  
+    networks:
+      - aura_network
+
+  openclaw-db:
+    image: postgres:15-alpine
+    container_name: openclaw_db
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./db-data:/var/lib/postgresql/data
+    networks:
+      - aura_network
+
+networks:
+  aura_network:
+    external: true
