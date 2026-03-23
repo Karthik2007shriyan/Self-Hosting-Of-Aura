@@ -1,1 +1,31 @@
+version: '3.8'
 
+services:
+  openclaw-app:
+    container_name: openclaw_engine
+    build: .  # Assuming you build a custom Dockerfile for your script
+    restart: unless-stopped
+    environment:
+      - TZ=Asia/Kolkata # Sets the timezone to Bengaluru/IST
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data  # Maps local folder to save generated leads/logs
+    networks:
+      - aura_network
+
+  # Optional: A lightweight database if Open Claw stores lead data
+  openclaw-db:
+    image: postgres:15-alpine
+    container_name: openclaw_db
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./db-data:/var/lib/postgresql/data
+    networks:
+      - aura_network
+
+networks:
+  aura_network:
+    external: true # Connects to your existing server network
